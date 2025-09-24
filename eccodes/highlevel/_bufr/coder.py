@@ -10,6 +10,7 @@ import io
 import warnings
 
 # flake8: noqa: F405
+#   ruff: noqa: F403
 
 from .common  import *
 from .helpers import ensure_array, missing_of
@@ -641,7 +642,7 @@ def keys_of(msg_handle, bufr_only=True, header_only=False, data_only=False, # no
         for key in keys:
             if key == 'unexpandedDescriptors':
                 next_key = next(keys, None)
-                if next_key == None:
+                if next_key is None:
                     if not header_only:
                         raise RuntimeError(data_keys_unaccessible)
                 else:

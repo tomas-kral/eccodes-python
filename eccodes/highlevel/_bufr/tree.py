@@ -12,6 +12,7 @@ from copy import copy
 from itertools import repeat
 
 # flake8: noqa: F405
+#   ruff: noqa: F403
 
 from .common  import *
 from .helpers import RaggedArray, SingletonDict
@@ -61,7 +62,7 @@ class ReplicationNode(Node):
     reset: bool = True
 
     def __post_init__(self):
-        super().__post_init__();
+        super().__post_init__()
         self.factors = RaggedArray.empty(self.level)
 
 @dataclass
@@ -350,7 +351,7 @@ def build_tree(coder): # noqa: C901
                 for key in node.keys:
                     try:
                         entry = entries[key.name]
-                    except:
+                    except KeyError:
                         entry = DataEntry(key.name, flags=key.flags)
                         if entry.name in current_behaviour.assumed_scalar_elements:
                             entry.flags |= SCALAR

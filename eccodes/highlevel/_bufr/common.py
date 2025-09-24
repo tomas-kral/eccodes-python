@@ -19,7 +19,7 @@ from pathlib import Path  # noqa
 from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional, Set  # noqa
 from typing import Sequence, Tuple, Union, cast  # noqa
 
-import numpy
+import numpy  # noqa
 import numpy as np
 
 from numpy.ma import MaskedArray  # noqa

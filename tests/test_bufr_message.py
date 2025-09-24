@@ -50,7 +50,7 @@ def test_message_uncompressed():
     assert bufr.get_count('dataCategory') == 1
     bufr['dataCategory'] = 11
     assert not unpacked(bufr)
-    assert not 'underfined' in bufr     # triggers unpacking
+    assert 'underfined' not in bufr     # triggers unpacking
     assert unpacked(bufr)
     # Accessing undefined elements raises an exception
     with pt.raises(KeyValueNotFoundError):

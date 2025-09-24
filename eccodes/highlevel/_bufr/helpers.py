@@ -7,6 +7,7 @@
 # nor does it submit to any jurisdiction.
 
 # flake8: noqa: F405
+#   ruff: noqa: F403
 
 from .common import *
 

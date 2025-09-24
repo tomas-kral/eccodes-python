@@ -7,12 +7,12 @@
 # nor does it submit to any jurisdiction.
 
 # flake8: noqa: F405
+#   ruff: noqa: F403
 
 from .coder   import Coder
 from .common  import *
 from .helpers import ensure_masked_array, flatten, missing_of
 from .tree    import AssociationNode, LeafNode, Node, ReplicationNode, WrapperNode, build_tree
-from .tables  import Element
 from .view    import View
 
 class Data(View):
@@ -468,7 +468,7 @@ class DataBlock(View):
         if key.rank:
             rank_count = slice_.stop - slice_.start
             if key.rank > rank_count:
-                message = f"Rank %d is out of bounds; max. rank of '%s' in this view is %d"
+                message = "Rank %d is out of bounds; max. rank of '%s' in this view is %d"
                 raise NotFoundError(message % (key.rank, entry.name, rank_count))
             start = slice_.start + key.rank - 1
             slice_ = slice(start, start + 1)
