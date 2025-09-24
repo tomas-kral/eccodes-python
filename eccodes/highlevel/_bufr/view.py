@@ -8,6 +8,8 @@
 
 import datetime as dt
 
+# flake8: noqa: F405
+
 from .common  import *
 from .helpers import get_datetime, set_datetime
 
@@ -58,7 +60,7 @@ class View:
 
         If `prefix` is specified, the datetime is derived from keys '{prefix}Year',
         '{prefix}Month', etc.
-        
+
         Optionally, the year and the month can be overwritten/forced to a specific value.
         This can be useful, for instance, if there is no dedicated year or month key.
         For example, ECMWF's section 2 defines 'rdbtimeDay', 'rdbtimeHour', etc.,

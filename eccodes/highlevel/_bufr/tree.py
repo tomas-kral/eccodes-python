@@ -6,8 +6,12 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+import re
+
 from copy import copy
 from itertools import repeat
+
+# flake8: noqa: F405
 
 from .common  import *
 from .helpers import RaggedArray, SingletonDict
@@ -82,7 +86,7 @@ class AssociationNode(Node):
     keys: List[Key] = field(default_factory=list)
     counts: Dict[MultiIndex, Counter] = field(default_factory=dict)
 
-def build_tree(coder):
+def build_tree(coder): # noqa: C901
     tables = coder.get_tables()
     operators = {4: []} # key: Code.X, value: a stack of Code.Y values (aka operands)
 
@@ -319,7 +323,7 @@ def build_tree(coder):
                         at = counter[code]
                         counter[code] += 1
                         node.bitmap_size = global_factors[code][at]
-                if node.value_size is None: 
+                if node.value_size is None:
                     code = node.value_factor
                     assert code.FX == (0, 31)
                     at = counter[code]

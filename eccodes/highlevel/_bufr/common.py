@@ -7,28 +7,28 @@
 # nor does it submit to any jurisdiction.
 
 import datetime as dt
-import re
-import sys
+import enum
 
-from collections import Counter, abc, defaultdict
-from copy import deepcopy
-from dataclasses import dataclass, field, fields
-from enum import auto; import enum
-from functools import cached_property
-from pathlib import Path
+from collections import Counter, abc, defaultdict  # noqa
+from contextlib import contextmanager
+from copy import deepcopy  # noqa
+from dataclasses import dataclass, field, fields  # noqa
+from enum import auto  # noqa
+from functools import cached_property  # noqa
+from pathlib import Path  # noqa
+from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional, Set  # noqa
+from typing import Sequence, Tuple, Union, cast  # noqa
 
-from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional, Set
-from typing import Sequence, Tuple, Union, cast
-from numpy.ma import MaskedArray
-from numpy.typing import DTypeLike, NDArray
+import numpy
+import numpy as np
 
-import eccodes
-import numpy; import numpy as np
+from numpy.ma import MaskedArray  # noqa
+from numpy.typing import DTypeLike, NDArray  # noqa
 
-from eccodes.eccodes import *
+from eccodes.eccodes import *  # noqa
 from eccodes.eccodes import KeyValueNotFoundError as NotFoundError
 
-from .tables  import Element
+from .tables import Element
 
 @dataclass
 class Behaviour:
@@ -59,29 +59,27 @@ class Behaviour:
 
 
 DEFAULT_BEHAVIOUR = Behaviour(assumed_scalar_elements=set([
-        # 'originatorOfRetrievedAtmosphericConstituent',
-        # 'satelliteChannelBandWidth',
-        # 'satelliteChannelCentreFrequency',
-        # 'satelliteIdentifier',
-        # 'satelliteInstruments',
-    ]))
+    # 'originatorOfRetrievedAtmosphericConstituent',
+    # 'satelliteChannelBandWidth',
+    # 'satelliteChannelCentreFrequency',
+    # 'satelliteIdentifier',
+    # 'satelliteInstruments',
+]))
 
 current_behaviour = deepcopy(DEFAULT_BEHAVIOUR)
 
 def get_behaviour():
-    global current_behaviour
+    global current_behaviour  # noqa
     return deepcopy(current_behaviour)
 
 def set_behaviour(new_behaviour):
-    global current_behaviour
+    global current_behaviour  # noqa
     for f in fields(new_behaviour):
         setattr(current_behaviour, f.name, getattr(new_behaviour, f.name))
 
-from contextlib import contextmanager
-
 @contextmanager
 def change_behaviour():
-    global current_behaviour
+    global current_behaviour  # noqa
     saved_behaviour = get_behaviour()
     try:
         yield current_behaviour
@@ -213,8 +211,8 @@ class Association:
         # of the bitmap.
         for key, indices in self.indices.items():
             bitmap_stop = self.bitmap.size + self.bitmap_offset
-            start = numpy.searchsorted(indices >= self.bitmap_offset, True)
-            stop = indices.size - numpy.searchsorted(indices[::-1] < bitmap_stop, True)
+            start = np.searchsorted(indices >= self.bitmap_offset, True)
+            stop = indices.size - np.searchsorted(indices[::-1] < bitmap_stop, True)
             self.slices[key] = slice(start, stop)
 
     def rank_mask(self, key: str):
@@ -223,7 +221,7 @@ class Association:
         """
         slice = self.slices[key]
         indices = self.indices[key] # all
-        mask = numpy.repeat(False, len(indices)) # the default for  ranks outside bitmap's scope
+        mask = np.repeat(False, len(indices)) # the default for  ranks outside bitmap's scope
         indices = indices[slice]    # only within bitmap's scope
         indices = indices - self.bitmap_offset # relative to bitmap
         mask[slice] = self.bitmap[indices]
@@ -237,7 +235,7 @@ class Association:
             mask = self.rank_mask(key)
         except KeyError: # key was defined *after* the bitmap association
             return False
-        return bool(numpy.any(mask))
+        return bool(np.any(mask))
 
 @dataclass
 class DataEntry:
@@ -255,4 +253,3 @@ class DataEntry:
     def size(self) -> int:
         assert len(self.shape) == 2
         return self.shape[0] * self.shape[1]
-

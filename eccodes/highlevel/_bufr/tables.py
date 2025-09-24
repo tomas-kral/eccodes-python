@@ -6,13 +6,15 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+import ctypes
 import csv
+import os
 import re
 
 from collections import ChainMap, UserDict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, List, Optional, Tuple, Union
+from typing import Iterator, List, Tuple, Union
 
 import eccodes
 import gribapi
@@ -35,7 +37,7 @@ class Code(int):
 
     @property
     def Y(self) -> int:
-        return int(self) %  1000
+        return int(self) % 1000
 
     @property
     def FX(self) -> Tuple[int, int]:
@@ -190,9 +192,6 @@ class Tables:
                 previous_code = code
             yield Descriptor(code, name)
 
-import ctypes
-import os
-
 libc = ctypes.CDLL(None) # automatically finds and loads the C standard library
 
 fseek = libc.fseek
@@ -217,15 +216,6 @@ libeccodes = ctypes.CDLL(eccodes.codes_get_library_path())
 codes_fopen = libeccodes.codes_fopen
 codes_fopen.restype = ctypes.c_void_p
 
-def codes_has_file(path: Union[str, os.PathLike]) -> bool:
-    stream = libeccodes.codes_fopen(str(path).encode(), b'r')
-    if stream:
-        libc.fclose(stream)
-        has = True
-    else:
-        has = False
-    return has
-
 def codes_read_file(path: Union[str, os.PathLike]) -> str:
     full_path = gribapi.grib_full_defs_path(str(path))
     stream = libeccodes.codes_fopen(full_path.encode(), b'r')
@@ -241,4 +231,3 @@ def codes_read_file(path: Union[str, os.PathLike]) -> str:
     finally:
         fclose(stream)
     return string
-

@@ -8,6 +8,9 @@
 
 import datetime as dt
 
+# flake8: noqa: F405
+# ruff: noqa: F405
+
 from .coder   import Coder
 from .common  import *
 from .data    import Data
@@ -91,7 +94,7 @@ class Message(View):
         self._commit() # [1]
         if subsets is not None\
                 and isinstance(subsets, slice) \
-                and (isinstance(subsets.start, (np.datetime64, dt.datetime)) or \
+                and (isinstance(subsets.start, (np.datetime64, dt.datetime)) or
                      isinstance(subsets.stop,  (np.datetime64, dt.datetime))):
             datetime = self.data.get_datetime(rank=1)
             start = dt.datetime.min if subsets.start is None else subsets.start
@@ -288,7 +291,7 @@ class Message(View):
     def _handle(self) -> int:
         return self._coder._handle
 
-    def update_header_from_data(self, skip_dirty=False) -> None:
+    def update_header_from_data(self, skip_dirty=False) -> None: # noqa: C901
         """Updates some of the header keys based on keys from the data section.
 
         This method sets header keys such as 'typicalYear', 'localMonth',

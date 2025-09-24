@@ -9,9 +9,11 @@
 import io
 import warnings
 
+# flake8: noqa: F405
+
 from .common  import *
 from .helpers import ensure_array, missing_of
-from .tables  import Code, Element, Tables, Version
+from .tables  import Tables, Version
 
 TEMPLATE_KEYS = dict.fromkeys([
     'numberOfSubsets',
@@ -24,7 +26,7 @@ TEMPLATE_KEYS = dict.fromkeys([
     'shortDelayedDescriptorReplicationFactor',
     'unexpandedDescriptors'])
 
-INPUT_TEMPLATE_KEYS = dict.fromkeys([ # [1]
+INPUT_TEMPLATE_KEYS = dict.fromkeys([  # [1]
     'numberOfSubsets',
     'compressedData',
     'inputDataPresentIndicator',
@@ -129,7 +131,7 @@ class Coder:
             if array.dtype == bool:
                 subsets = np.arange(array.size)[array]
             elif array.dtype != int:
-                message ='`subsets` must be an array of bool or int; got type %s'
+                message = '`subsets` must be an array of bool or int; got type %s'
                 raise TypeError(message % array.dtype)
             start, stop = subsets[0], subsets[-1] + 1
             is_interval = subsets.size == stop - start
@@ -215,7 +217,7 @@ class Coder:
             factors[code] = array
         return factors
 
-    def checkout(self, entry: DataEntry):
+    def checkout(self, entry: DataEntry): # noqa: C901
         if entry.flags & FACTOR:
             # In principle we shouldn't need this branch as we pre-load all delayed
             # replication factor arrays in build_tree(). However, some messages
@@ -295,10 +297,10 @@ class Coder:
         #     descriptor is 0, meaning it can't represent floating-point values.
         #     So, in the absence of 'Change scale' operator, the default native
         #     type should be int.
-        #     
+        #
         # [2] To work around ECC-1624, we have to get 'centre' values rank by rank.
 
-    def commit(self, entry) -> None:
+    def commit(self, entry) -> None: # noqa: C901
         key = entry.name
         array = entry.array
         array.data[array.mask] = array.fill_value
@@ -342,7 +344,7 @@ class Coder:
                                 codes_set(self._handle, f'#{rank}#{key}', array.data[rank-1])
                         else:
                             raise error
-                             
+
         if self._clone_handle: # [5]
             codes_release(self._clone_handle)
             self._clone_handle = 0
@@ -408,9 +410,10 @@ class Coder:
         # [1], [2] Avoid creating unnecessary copies in read-only mode. TODO
 
     @cached_property
-    def _tables(self) -> Tables: return self.get_tables()
+    def _tables(self) -> Tables:
+        return self.get_tables()
 
-    def get(self, key: str, header_only=False, data_only=False, validate=True) -> ValueLike:
+    def get(self, key: str, header_only=False, data_only=False, validate=True) -> ValueLike: # noqa: C901
         if validate:
             if header_only and data_only:
                 raise ValueError("header_only and data_only can't be both True")
@@ -497,7 +500,7 @@ class Coder:
             codes_release(self._clone_handle)
             self._clone_handle = 0
 
-    def set(self, key: str, value: ValueLike, header_only=False, data_only=False,
+    def set(self, key: str, value: ValueLike, header_only=False, data_only=False, # noqa: C901
             validate=True, ignore_read_only_error=False) -> None:
         if validate:
             if header_only and data_only:
@@ -605,7 +608,7 @@ class KeysIterator(object):
             raise StopIteration
 
 
-def keys_of(msg_handle, bufr_only=True, header_only=False, data_only=False,
+def keys_of(msg_handle, bufr_only=True, header_only=False, data_only=False, # noqa: C901
             skip: FlagsLike = None) -> Iterator[str]:
     """Returns an iterator over the keys of the message.
 
@@ -631,7 +634,7 @@ def keys_of(msg_handle, bufr_only=True, header_only=False, data_only=False,
 
     data_keys = False
     keys = KeysIterator(msg_handle, bufr_only, skip)
-    data_keys_unaccessible =  "Cannot access data keys because message hasn't been unpacked. "
+    data_keys_unaccessible = "Cannot access data keys because message hasn't been unpacked. "
     data_keys_unaccessible += "If you want to access header keys only, set keyword argument `header_only` to True."
 
     if bufr_only:
@@ -676,4 +679,3 @@ def keys_of(msg_handle, bufr_only=True, header_only=False, data_only=False,
             if (header_only and data_keys) or (data_only and not data_keys):
                 continue
             yield key
-

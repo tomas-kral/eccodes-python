@@ -6,6 +6,8 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+# flake8: noqa: F405
+
 from .coder   import Coder
 from .common  import *
 from .helpers import ensure_masked_array, flatten, missing_of
@@ -220,7 +222,7 @@ class DataBlock(View):
             for child in node.children:
                 yield DataBlock(self._data, child, self._index)
 
-    def __getitem__(self, subscript: Union[int, str]) -> Union['DataBlock', ValueLike]:
+    def __getitem__(self, subscript: Union[int, str]) -> Union['DataBlock', ValueLike]: # noqa: C901
         if isinstance(subscript, str):
             key = Key.from_string(subscript)
             entry = self._get_entry(key)
@@ -328,7 +330,7 @@ class DataBlock(View):
         return count
 
     def get_shape(self, key: str) -> Tuple[int, ...]:
-        key = Key.from_string(key) 
+        key = Key.from_string(key)
         entry = self._get_entry(key)
         subscript = self._get_subscript(entry, key)
         if isinstance(subscript, slice):
@@ -425,7 +427,7 @@ class DataBlock(View):
                 array.fill_value = ''
             else:
                 array = np.ma.masked_equal(array, missing_of(array.dtype), copy=False)
-            entry.array = array  
+            entry.array = array
         if entry.flags & Flags.SCALAR:
             array = entry.array.ravel()
         else:
@@ -553,9 +555,9 @@ def resolve_counts(node, index: MultiIndex) -> Counter:
                 counts += resolve_counts(child, index)
             if len(index) == node.level:
                 node.counts[index] = counts
-    if (isinstance(node, LeafNode)
-            and isinstance(node.parent, ReplicationNode)
-            and len(index) < node.level):
+    if (isinstance(node, LeafNode) and
+            isinstance(node.parent, ReplicationNode) and
+            len(index) < node.level):
         total_factor = sum(flatten(node.parent.factors[index]))
         counts = counts.copy()
         for name in counts:
@@ -591,4 +593,3 @@ def resolve_elements(entries, root: Node):
     #     of the LeafNode, but we add them to entries only if there is at least
     #     one rank covered by the bitmap. Check if this is OK or whether it needs
     #     to be optimized. TODO
-

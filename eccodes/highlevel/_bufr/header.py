@@ -6,6 +6,8 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+# flake8: noqa: F405
+
 from .coder   import Coder, INPUT_TEMPLATE_KEYS, TEMPLATE_KEYS
 from .common  import *
 from .helpers import get_datetime, get_date, get_time, set_datetime, set_date, set_time
@@ -70,12 +72,12 @@ COMMON_COMPUTED_KEYS = set([
     'typicalDateTime', 'typicalDate', 'typicalTime',
     'localDateTime', 'localDate', 'localTime',
     'rdbtimeDateTime', 'rdbtimeDate', 'rdbtimeTime',
-    'rectimeTime', 
+    'rectimeTime',
     'md5Data',
 ])
 
 _COMPUTED_ENTRIES = {
- None: [Entry(key, computed=True) for key in COMMON_COMPUTED_KEYS],
+    None: [Entry(key, computed=True) for key in COMMON_COMPUTED_KEYS],
     3: [Entry('typicalYear', computed=True, project=project_edition_3_typical_year)],
     4: [Entry('typicalCentury', computed=True), Entry('typicalYearOfCentury', computed=True)],
 }
@@ -118,7 +120,7 @@ class Header(View):
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Header):
             eq = False
-            items1 =  self.items(skip='read_only')
+            items1 = self.items(skip='read_only')
             items2 = other.items(skip='read_only')
             for (k1, v1), (k2, v2) in zip(items1, items2):
                 if k1 != k2:
@@ -277,6 +279,6 @@ class Header(View):
         #     But we will probably need this in the future when adding support for
         #     dynamically resizeable replication blocks, which will require full
         #     virtualisation of BUFR messages. TODO
-        #     
+        #
         # [2] Just a reminder that we don't need to use header_only=True here
         #     because the keys in the cache are header-only by definition.

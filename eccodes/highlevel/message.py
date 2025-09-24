@@ -4,7 +4,7 @@ from contextlib import contextmanager
 import numpy as np
 
 import eccodes
-from ._bufr import BUFRMessage
+from ._bufr import BUFRMessage  # noqa
 
 _TYPES_MAP = {
     "float": float,

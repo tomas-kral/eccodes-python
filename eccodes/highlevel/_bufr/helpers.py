@@ -6,6 +6,8 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+# flake8: noqa: F405
+
 from .common import *
 
 class RaggedArray:
@@ -129,8 +131,8 @@ class SingletonDict: # TODO: UserDict?
         self._has_value = True
 
 def get_datetime(view: Union['View', abc.Mapping],
-             rank: Optional[Union[int, slice]] = None, prefix: str = '',
-             year: Optional[int] = None, month: Optional[int] = None) -> NDArray:
+    rank: Optional[Union[int, slice]] = None, prefix: str = '',
+    year: Optional[int] = None, month: Optional[int] = None) -> NDArray:
     """
     Returns an array of type `datetime64` derived from datetime-related keys/values.
     """
@@ -143,8 +145,8 @@ def get_datetime(view: Union['View', abc.Mapping],
     return datetime
 
 def get_date(view: Union['View', abc.Mapping],
-             rank: Optional[Union[int, slice]] = None, prefix: str = '',
-             year: Optional[int] = None, month: Optional[int] = None) -> NDArray:
+    rank: Optional[Union[int, slice]] = None, prefix: str = '',
+    year: Optional[int] = None, month: Optional[int] = None) -> NDArray:
     """
     Returns a `datetime64` array derived from date-related keys/values.
     """
@@ -171,8 +173,8 @@ def get_date(view: Union['View', abc.Mapping],
         date = sum(parts)
     return date
 
-def get_time(view: Union['View', abc.Mapping],
-             rank: Optional[Union[int, slice]] = None, prefix: str = '') -> NDArray:
+def get_time(view: Union['View', abc.Mapping], # noqa: C901
+    rank: Optional[Union[int, slice]] = None, prefix: str = '') -> NDArray:
     """
     Returns a `timedelta64` array derived from time-related keys/values.
     """
@@ -283,7 +285,7 @@ def set_date(view: Union['View', abc.MutableMapping], value: Union[DateLike, np.
         view[day] = date.day
 
 def set_time(view: Union['View', abc.MutableMapping], value: Union[TimeLike, np.ndarray],
-        rank: Optional[int] = None, prefix: str = '') -> None:
+    rank: Optional[int] = None, prefix: str = '') -> None:
     keys = ['hour', 'minute', 'second']
     for i, name in enumerate(keys):
         if prefix:
@@ -455,11 +457,11 @@ def flatten(items):
         yield items
 
 MISSING_OF = {
-    str:   '',
-    int:   CODES_MISSING_LONG,
+    str: '',
+    int: CODES_MISSING_LONG,
     float: CODES_MISSING_DOUBLE,
-    np.int32:   CODES_MISSING_LONG,
-    np.int64:   CODES_MISSING_LONG,
+    np.int32: CODES_MISSING_LONG,
+    np.int64: CODES_MISSING_LONG,
     np.float64: CODES_MISSING_DOUBLE,
     np.dtype('i4'): CODES_MISSING_LONG,
     np.dtype('i8'): CODES_MISSING_LONG,
@@ -472,11 +474,11 @@ def missing_of(obj: Any) -> Union[int, float, str]:
     try:
         missing = MISSING_OF[obj]
     except (KeyError, TypeError):
-        if isinstance(obj, np.ndarray): 
+        if isinstance(obj, np.ndarray):
             try:
                 missing = missing_of(obj.dtype)
             except KeyError:
-               missing = None
+                missing = None
         elif isinstance(obj, np.dtype):
             if obj.type == np.str_:
                 missing = ''
@@ -493,4 +495,3 @@ def missing_of(obj: Any) -> Union[int, float, str]:
     if missing is None:
         raise ValueError("Object %s has no corresponding missing value" % obj)
     return missing
-
